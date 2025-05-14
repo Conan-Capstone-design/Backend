@@ -9,7 +9,21 @@ import {
   getUserID,
   insertUserSql,
   getPreferToUserID,
+  checkUser,
 } from "./user.sql.js";
+
+// 모든 유저 조회
+export const allUser = async () => {
+  try {
+      const conn = await pool.getConnection();
+      const [result] = await conn.query(checkUser);
+      conn.release();
+      return result;
+  } catch (err) {
+    console.error("Error acquiring connection:", err);
+    throw new BaseError(status.PARAMETER_IS_WRONG);
+  }
+};
 
 // User 데이터 삽입
 export const addUser = async (data) => {
@@ -27,12 +41,10 @@ export const addUser = async (data) => {
 
     const result = await pool.query(insertUserSql, [
       data.email,
-      data.name,
-      data.gender,
-      data.birth,
-      data.addr,
-      data.specAddr,
-      data.phone,
+      data.password,
+      data.nickname,
+      data.option,
+      data.created_at
     ]);
 
     conn.release();

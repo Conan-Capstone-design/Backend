@@ -9,17 +9,14 @@ import {
 } from "../models/user.dao";
 
 export const joinUser = async (body) => {
-  const birth = new Date(body.birthYear, body.birthMonth, body.birthDay);
-  const prefer = body.prefer;
+  const created_at = new Date();
 
   const joinUserData = await addUser({
     email: body.email,
-    name: body.name,
-    gender: body.gender,
-    birth: birth,
-    addr: body.addr,
-    specAddr: body.specAddr,
-    phone: body.phone,
+    password: body.password,
+    nickname: body.nickname,
+    option: body.option,
+    created_at: created_at
   });
 
   if (joinUserData == -1) {

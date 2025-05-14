@@ -2,8 +2,11 @@
 import express from "express";
 import asyncHandler from "express-async-handler";
 
-import { userSignin } from "../controllers/user.controller.js";
+import { allUser, signUp } from "../controllers/user.controller.js";
 
 export const userRouter = express.Router();
 
-userRouter.post("/signin", asyncHandler(userSignin));
+// 전체 유저 조회
+userRouter.get("/users", asyncHandler(allUser));
+// 회원가입
+userRouter.post('/sign-up', asyncHandler(signUp))
