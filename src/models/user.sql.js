@@ -3,9 +3,9 @@
 export const checkUser = "select * from USER"
 
 export const insertUserSql =
-  "INSERT INTO member (email, password, nickname, option, created_at) VALUES (?, ?, ?, ?, ?);";
+  "INSERT INTO user (email, password, nickname, `option`, created_at) VALUES (?, ?, ?, ?, ?);";
 
-export const getUserID = "SELECT * FROM member WHERE id = ?";
+export const getUserID = "SELECT * FROM user WHERE user_id = ?";
 
 export const connectFoodCategory =
   "INSERT INTO user_favor_category (f_category_id, member_id) VALUES (?, ?);";

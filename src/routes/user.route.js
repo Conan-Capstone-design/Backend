@@ -8,5 +8,5 @@ export const userRouter = express.Router();
 
 // 전체 유저 조회
 userRouter.get("/users", asyncHandler(allUser));
-// 회원가입
+// 회원가입 - 이미지는 s3 만들고
 userRouter.post('/sign-up', asyncHandler(signUp))

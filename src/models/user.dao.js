@@ -30,10 +30,9 @@ export const addUser = async (data) => {
   try {
     const conn = await pool.getConnection();
 
-    console.log(conn);
-
     const [confirm] = await pool.query(confirmEmail, data.email);
 
+    // 이메일 중복시 -1 반환
     if (confirm[0].isExistEmail) {
       conn.release();
       return -1;
@@ -48,7 +47,7 @@ export const addUser = async (data) => {
     ]);
 
     conn.release();
-    return result[0].insertId;
+    return result[0].resultId
   } catch (err) {
     console.error("Error acquiring connection:", err);
 
