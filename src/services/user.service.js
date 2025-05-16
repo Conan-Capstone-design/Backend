@@ -9,7 +9,7 @@ import {
   setPrefer,
 } from "../models/user.dao";
 
-export const joinUser = async (body) => {
+export const joinUser = async (body, image) => {
   // 시간
   const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
   console.log("시간", created_at)
@@ -26,6 +26,7 @@ export const joinUser = async (body) => {
     password: hashedPassword,
     nickname: body.nickname,
     option: body.option,
+    image: image,
     created_at: created_at
   });
 

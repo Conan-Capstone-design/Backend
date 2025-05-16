@@ -16,5 +16,14 @@ export const signUp = async (req, res, next) => {
   console.log("회원가입을 요청하였습니다!");
   console.log("body:", req.body);
 
-  res.send(response(status.SUCCESS, await joinUser(req.body)));
+  // image
+  var imageURL;
+  if (req.file) {
+      imageURL = req.file.location;
+  } else {
+      imageURL = null;
+  }
+  console.log("imageURL:", imageURL)
+
+  res.send(response(status.SUCCESS, await joinUser(req.body, imageURL)));
 };

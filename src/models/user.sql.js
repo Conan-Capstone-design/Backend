@@ -5,6 +5,9 @@ export const checkUser = "select * from USER"
 export const insertUserSql =
   "INSERT INTO user (email, password, nickname, `option`, created_at) VALUES (?, ?, ?, ?, ?);";
 
+export const insertProfileImageSql =
+  "INSERT INTO user_image (user_id, profile_image) VALUES (?, ?);";
+  
 export const getUserID = "SELECT * FROM user WHERE user_id = ?";
 
 export const connectFoodCategory =

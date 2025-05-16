@@ -10,6 +10,7 @@ import {
   insertUserSql,
   getPreferToUserID,
   checkUser,
+  insertProfileImageSql
 } from "./user.sql.js";
 
 // 모든 유저 조회
@@ -25,7 +26,7 @@ export const allUser = async () => {
   }
 };
 
-// User 데이터 삽입
+// 회원가입
 export const addUser = async (data) => {
   try {
     const conn = await pool.getConnection();
@@ -44,6 +45,15 @@ export const addUser = async (data) => {
       data.nickname,
       data.option,
       data.created_at
+    ]);
+
+
+    const userId = result[0].insertId; 
+    console.log(result[0].insertId)
+
+    await conn.query(insertProfileImageSql, [
+      userId,
+      data.image,
     ]);
 
     conn.release();
