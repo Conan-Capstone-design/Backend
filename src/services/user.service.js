@@ -1,14 +1,16 @@
 import { BaseError } from "../../config/error";
 import { status } from "../../config/response.status";
 import crypto from "crypto";
-import { signinResponseDTO, existEmail } from "../dtos/user.dto";
+import jwt from "jsonwebtoken"
+
 import {
-  addUser,
-  getUser,
-  getUserPreferToUserID,
-  setPrefer,
+  addUser
 } from "../models/user.dao";
 
+import { JWT_SECRET } from '../../config/jwt.js'
+const jwtsecret = JWT_SECRET
+
+// 회원가입
 export const joinUser = async (body, image) => {
   // 시간
   const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -37,3 +39,24 @@ export const joinUser = async (body, image) => {
     return joinUserData
   }
 };
+
+// 로그인 (Jwt 토큰 발급)
+export const userLogin = async (user_id) => {
+    try {
+        //토큰 생성 Service
+        let token = await jwt.sign(
+          {
+            user_id: user_id,
+          }, // 토큰의 내용(payload)
+          jwtsecret, // 비밀키
+          {
+            expiresIn: "1d",
+            subject: "userInfo",
+          } // 유효 기간 1일
+        );
+        console.log("jwtsecret:",jwtsecret)
+        return token;
+      } catch (err) {
+        console.error("Error acquiring connection:", err);
+      }
+}

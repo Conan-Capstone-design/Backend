@@ -20,3 +20,9 @@ export const getPreferToUserID =
   "SELECT ufc.uf_category_id, ufc.f_category_id, ufc.user_id, fcl.f_category_name " +
   "FROM user_favor_category ufc JOIN food_category_list fcl on ufc.f_category_id = fcl.f_category_id " +
   "WHERE ufc.user_id = ? ORDER BY ufc.f_category_id ASC;";
+// 아이디 중복 확인
+export const repId = 
+  "select user_id, email from USER where email=?"
+// 비밀번호 확인
+export const checkPw = 
+  "select user_id, email, password from USER where email=? and password=?"
