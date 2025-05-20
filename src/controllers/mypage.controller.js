@@ -38,7 +38,7 @@ export const getVoiceListCon = async (req, res) => {
 // 저장한 캐릭터 대사 모음 (캐릭터 날짜 별)
 export const getVoiceListByCharCon = async (req, res) => {
     try {
-        const characterName = req.params.characterName;
+        const characterName = req.query.characterName;
 
         const result = await getVoiceListByChar(req.verifiedToken.user_id, characterName);
         res.send(response(status.SUCCESS, result));
@@ -52,7 +52,7 @@ export const getVoiceListByCharCon = async (req, res) => {
 export const deleteVoiceCon = async (req, res) => {
     try {
         const user_id = req.verifiedToken.user_id;
-        const { characterName, voiceId } = req.params;
+        const { characterName, voiceId } = req.query;
 
         await deleteVoice(user_id, characterName, voiceId);
         res.send(response(status.SUCCESS, {}));

@@ -14,9 +14,9 @@ mypageRouter.put('/profile', jwtMiddleware, updateUserCon);
 // 저장된 캐릭터 대사 모음
 mypageRouter.get('/voice-list', jwtMiddleware, getVoiceListCon);
 // 저장한 캐릭터 대사 모음 (캐릭터 날짜 별)
-mypageRouter.get('/voice-list/:characterName', jwtMiddleware, getVoiceListByCharCon);
+mypageRouter.get('/voice-list/byChar', jwtMiddleware, getVoiceListByCharCon);
 // 저장한 캐릭터 대사 모음 (삭제)
-mypageRouter.delete('/voice-list/:characterName/:voiceId', jwtMiddleware, deleteVoiceCon);
+mypageRouter.delete('/voice-list/byChar/delete', jwtMiddleware, deleteVoiceCon);
 
 
 export { mypageRouter };
