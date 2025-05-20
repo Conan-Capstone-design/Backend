@@ -16,4 +16,3 @@ export const tempResponseDTO = (data) => {
 export const flagResponseDTO = (flag) => {
     return {"flag" : flag};
 }
-

@@ -1,36 +1,62 @@
 import { BaseError } from "../../config/error";
 import { status } from "../../config/response.status";
-import { signinResponseDTO, existEmail } from "../dtos/user.dto";
+import crypto from "crypto";
+import jwt from "jsonwebtoken"
+
 import {
-  addUser,
-  getUser,
-  getUserPreferToUserID,
-  setPrefer,
+  addUser
 } from "../models/user.dao";
 
-export const joinUser = async (body) => {
-  const birth = new Date(body.birthYear, body.birthMonth, body.birthDay);
-  const prefer = body.prefer;
+import { JWT_SECRET } from '../../config/jwt.js'
+const jwtsecret = JWT_SECRET
+
+// 회원가입
+export const joinUser = async (body, image) => {
+  // 시간
+  const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  console.log("시간", created_at)
+
+  // 비밀번호 암호화
+  const hashedPassword = await crypto
+      .createHash("sha256")
+      .update(body.password)
+      .digest("hex");
+  console.log("비밀번호 암호화" + hashedPassword);
 
   const joinUserData = await addUser({
     email: body.email,
-    name: body.name,
-    gender: body.gender,
-    birth: birth,
-    addr: body.addr,
-    specAddr: body.specAddr,
-    phone: body.phone,
+    password: hashedPassword,
+    nickname: body.nickname,
+    option: body.option,
+    image: image,
+    created_at: created_at
   });
 
+  // 이메일 중복시
   if (joinUserData == -1) {
     throw new BaseError(status.EMAIL_ALREADY_EXIST);
   } else {
-    // for (let i = 0; i < prefer.length; i++) {
-    //   await setPrefer(joinUserData, prefer[i]);
-    // }
-    return signinResponseDTO(
-      await getUser(joinUserData)
-      //   await getUserPreferToUserID(joinUserData)
-    );
+    return joinUserData
   }
 };
+
+// 로그인 (Jwt 토큰 발급)
+export const userLogin = async (user_id) => {
+    try {
+        //토큰 생성 Service
+        let token = await jwt.sign(
+          {
+            user_id: user_id,
+          }, // 토큰의 내용(payload)
+          jwtsecret, // 비밀키
+          {
+            expiresIn: "1d",
+            subject: "userInfo",
+          } // 유효 기간 1일
+        );
+        console.log("jwtsecret:",jwtsecret)
+        return token;
+      } catch (err) {
+        console.error("Error acquiring connection:", err);
+      }
+}

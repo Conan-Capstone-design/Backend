@@ -62,38 +62,26 @@ export const status = {
     message: "닉네임은 필수입니다.",
   },
 
-  // article err
-  ARTICLE_NOT_FOUND: {
-    status: StatusCodes.NOT_FOUND,
+  USER_NOT_EXIST: {
+    status: StatusCodes.BAD_REQUEST,
     isSuccess: false,
-    code: "ARTICLE4001",
-    message: "게시글이 없습니다.",
+    code: "MEMBER4003",
+    message: "유저를 찾을 수 없습니다.",
   },
 
-  // exist email
-  EMAIL_ALREADY_EXIST: {
+  LOGIN_PASSWORD_WRONG: {
     status: StatusCodes.BAD_REQUEST,
     isSuccess: false,
-    code: "MEMBER4001",
-    message: "존재하는 이메일입니다.",
+    code: "MEMBER4004",
+    message: "비밀번호가 틀렸습니다.",
   },
 
-  PARAMETER_IS_WRONG: {
+  // db error
+  PARAMETER_IS_WRONG: { 
     status: StatusCodes.BAD_REQUEST,
-    isSuccess: false,
-    code: "MEMBER4001",
-    message: "파라미터 틀림",
+    "isSuccess": false, 
+    "code": "DATABASE4001", 
+    "message": "쿼리 실행 시 전달되는 파라미터가 잘못되었습니다. 파라미터 개수 혹은 파라미터 형식을 확인해주세요." 
   },
-  STORE_NOT_EXIST: {
-    status: StatusCodes.BAD_REQUEST,
-    isSuccess: false,
-    code: "STORE4001",
-    message: "가게 존재하지 않음",
-  },
-  ALREADY_CHALLENGING: {
-    status: StatusCodes.BAD_REQUEST,
-    isSuccess: false,
-    code: "STORE4001",
-    message: "이미 도전 중",
-  },
+
 };

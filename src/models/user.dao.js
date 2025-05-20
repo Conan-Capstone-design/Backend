@@ -4,22 +4,35 @@ import { pool } from "../../config/db.config";
 import { BaseError } from "../../config/error";
 import { status } from "../../config/response.status";
 import {
-  connectFoodCategory,
   confirmEmail,
-  getUserID,
   insertUserSql,
-  getPreferToUserID,
+  checkUser,
+  insertProfileImageSql,
+  repId,
+  checkPw
 } from "./user.sql.js";
 
-// User 데이터 삽입
+// 모든 유저 조회
+export const allUser = async () => {
+  try {
+    const conn = await pool.getConnection();
+    const [result] = await conn.query(checkUser);
+    conn.release();
+    return result;
+  } catch (err) {
+    console.error("Error acquiring connection:", err);
+    throw new BaseError(status.PARAMETER_IS_WRONG);
+  }
+};
+
+// 회원가입
 export const addUser = async (data) => {
   try {
     const conn = await pool.getConnection();
 
-    console.log(conn);
-
     const [confirm] = await pool.query(confirmEmail, data.email);
 
+    // 이메일 중복시 -1 반환
     if (confirm[0].isExistEmail) {
       conn.release();
       return -1;
@@ -27,16 +40,23 @@ export const addUser = async (data) => {
 
     const result = await pool.query(insertUserSql, [
       data.email,
-      data.name,
-      data.gender,
-      data.birth,
-      data.addr,
-      data.specAddr,
-      data.phone,
+      data.password,
+      data.nickname,
+      data.option,
+      data.created_at
+    ]);
+
+
+    const userId = result[0].insertId;
+    console.log(result[0].insertId)
+
+    await conn.query(insertProfileImageSql, [
+      userId,
+      data.image,
     ]);
 
     conn.release();
-    return result[0].insertId;
+    return result[0].resultId
   } catch (err) {
     console.error("Error acquiring connection:", err);
 
@@ -44,57 +64,29 @@ export const addUser = async (data) => {
   }
 };
 
-// 사용자 정보 얻기
-export const getUser = async (userId) => {
+// 아이디 중복 확인
+export const overlapId = async (data) => {
   try {
     const conn = await pool.getConnection();
-
-    const [user] = await pool.query(getUserID, userId);
-
-    console.log(user);
-
-    if (user.length == 0) {
-      return -1;
-    }
-
+    const [result] = await conn.query(repId, [data.email]
+    );
     conn.release();
-    return user;
+    return result[0];
   } catch (err) {
-    console.error("Error acquiring connection:", err);
-
     throw new BaseError(status.PARAMETER_IS_WRONG);
   }
 };
 
-// 음식 선호 카테고리 매핑
-export const setPrefer = async (userId, foodCategoryId) => {
+// 비밀번호 확인
+export const selectUserPassword = async (data) => {
   try {
     const conn = await pool.getConnection();
-
-    await pool.query(connectFoodCategory, [foodCategoryId, userId]);
-
+    const [result] = await conn.query(checkPw, [data[0], data[1]]
+    );
     conn.release();
-
-    return;
+    console.log(result)
+    return result[0];
   } catch (err) {
-    console.error("Error acquiring connection:", err);
-
-    throw new BaseError(status.PARAMETER_IS_WRONG);
-  }
-};
-
-// 사용자 선호 카테고리 반환
-export const getUserPreferToUserID = async (userID) => {
-  try {
-    const conn = await pool.getConnection();
-    const prefer = await pool.query(getPreferToUserID, userID);
-
-    conn.release();
-
-    return prefer;
-  } catch (err) {
-    console.error("Error acquiring connection:", err);
-
     throw new BaseError(status.PARAMETER_IS_WRONG);
   }
 };
