@@ -9,7 +9,33 @@ export const getCommentListSql = 'SELECT c.character, cv.created_at FROM charact
 // 저장한 캐릭터 대사 목록 : limit x
 export const getCommentList2Sql = 'SELECT c.character, cv.created_at FROM character_voice cv JOIN `character` c ON cv.character_id = c.character_id WHERE cv.user_id = ? ORDER BY cv.created_at DESC;';
 
-// 캐릭터 날짜별 대사 모음
+// 저장한 캐릭터 대사 모음
+export const getVoiceListSql = `
+WITH ranked_voice AS (
+    SELECT character_id, created_at,
+           ROW_NUMBER() OVER (
+             PARTITION BY character_id
+             ORDER BY created_at ASC, voice_id ASC
+           ) AS rn
+    FROM character_voice
+    WHERE user_id = ?
+)
+SELECT c.\`character\`, rv.created_at
+FROM ranked_voice rv
+JOIN \`character\` c ON rv.character_id = c.character_id
+WHERE rv.rn = 1;
+`;
+// 캐릭터별 저장한 캐릭터 대사 모음
+export const getVoiceListByCharSql= `
+    SELECT rv.dialogue_text, rv.created_at, rv.voice_id, rv.voice
+    FROM character_voice rv
+    JOIN \`character\` c ON rv.character_id = c.character_id
+    WHERE rv.user_id = ? AND c.\`character\` = ?
+    ORDER BY rv.created_at ASC;
+  `;
+
+// 
+export const deleteVoiceSql='DELETE rv FROM character_voice rv JOIN \`character\` c ON rv.character_id = c.character_id WHERE rv.voice_id = ? AND rv.user_id = ? AND c.\`character\` = ?'
 
 
 // 프로필 수정

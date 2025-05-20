@@ -1,7 +1,7 @@
 import { pool } from '../../config/db.config.js';
 import { response } from '../../config/response.js';
 import { status } from '../../config/response.status.js';
-import { getUserInfoSql, getCommentListSql, getCommentList2Sql, updateUserProfileSql, updateUserImageSql, getProfileUrlSql, getNicknameSql, deleteImageSql, getEmailSql } from './mypage.sql.js';
+import { getUserInfoSql, getCommentListSql, getCommentList2Sql, updateUserProfileSql, updateUserImageSql, getProfileUrlSql, getNicknameSql, deleteImageSql, getEmailSql, getVoiceListSql, getVoiceListByCharSql, deleteVoiceSql } from './mypage.sql.js';
 
 // 사용자 정보 가져오기
 export const getUserInfoDao = async (user_id) => {
@@ -37,6 +37,39 @@ export const getCommentListDao = async (user_id, limit) => {
         console.error("대사 목록을 가져오는 중 오류 발생:", err);
         throw response(status.INTERNAL_SERVER_ERROR, {});
     }
+};
+
+// 저장한 캐릭터 대사 모음
+export const getVoiceListDao = async (user_id) => {
+    try {
+        const conn = await pool.getConnection();
+        const [rows] = await conn.query(getVoiceListSql, [user_id]);
+        conn.release();
+        return rows;
+    } catch (err) {
+        console.error("getVoiceList 중 오류 발생:", err);
+        throw new Error("Database query failed");
+    }
+};
+
+// 캐릭터별 저장한 캐릭터 대사 모음
+export const getVoiceListByCharDao = async (user_id, characterName) => {
+    try {
+        const conn = await pool.getConnection();
+        const [rows] = await conn.query(getVoiceListByCharSql, [user_id, characterName]);
+        conn.release();
+        return rows;
+    } catch (err) {
+        console.error("getVoiceListByChar 중 오류 발생:", err);
+        throw new Error("Database query failed");
+    }
+};
+
+// 저장한 캐릭터 대사 모음 (삭제)
+export const deleteVoiceDao = async (user_id, characterName, voiceId) => {
+    const conn = await pool.getConnection();
+    await conn.query(deleteVoiceSql, [voiceId, user_id, characterName]);
+    conn.release();
 };
 
 // 사용자 프로필 수정하기

@@ -4,7 +4,7 @@ import { status } from '../../config/response.status.js';
 import { editImageProfile, deleteS3Object, renameS3Object } from '../../config/image.uploader.js';
 import path from "path";
 
-import { getUserInfo, getCommentList } from '../providers/mypage.provider.js'; 
+import { getUserInfo, getCommentList, getVoiceList, getVoiceListByChar, deleteVoice } from '../providers/mypage.provider.js'; 
 import { getNicknameDao, getProfileImageDao, deleteImageDao, getEmailDao } from '../models/mypage.dao.js'; 
 import { updateUser } from '../services/mypage.service.js'
 
@@ -20,6 +20,44 @@ export const getMyPageMainCon = async (req, res) => {
         }));
     } catch (error) {
         console.error("마이페이지 메인 화면 정보를 가져오는 중 오류 발생:", error);
+        res.send(response(status.INTERNAL_SERVER_ERROR, {}));
+    }
+};
+
+// 저장한 캐릭터 대사 모음
+export const getVoiceListCon = async (req, res) => {
+    try {
+        const result = await getVoiceList(req.verifiedToken.user_id);
+        res.send(response(status.SUCCESS, result));
+    } catch (err) {
+        console.error("저장한 캐릭터 대사 모음을 가져오는 중 오류 발생:", err);
+        res.send(response(status.INTERNAL_SERVER_ERROR, {}));
+    }
+};
+
+// 저장한 캐릭터 대사 모음 (캐릭터 날짜 별)
+export const getVoiceListByCharCon = async (req, res) => {
+    try {
+        const characterName = req.params.characterName;
+
+        const result = await getVoiceListByChar(req.verifiedToken.user_id, characterName);
+        res.send(response(status.SUCCESS, result));
+    } catch (err) {
+        console.error("저장한 캐릭터 대사 모음을 가져오는 중 오류 발생:", err);
+        res.send(response(status.INTERNAL_SERVER_ERROR, {}));
+    }
+};
+
+// 저장한 캐릭터 대사 모음 (삭제)
+export const deleteVoiceCon = async (req, res) => {
+    try {
+        const user_id = req.verifiedToken.user_id;
+        const { characterName, voiceId } = req.params;
+
+        await deleteVoice(user_id, characterName, voiceId);
+        res.send(response(status.SUCCESS, {}));
+    } catch (err) {
+        console.error('캐릭터 대사 삭제 중 오류 발생:', err);
         res.send(response(status.INTERNAL_SERVER_ERROR, {}));
     }
 };

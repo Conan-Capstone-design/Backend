@@ -18,6 +18,25 @@ export const commentListDTO = (data) => {
     }));
 };
 
+// 저장한 캐릭터 대사 모음
+export const voiceListDTO = (rows) => {
+    return rows.map(row => ({
+        character: row.character,
+        createdAt: row.created_at,
+    }));
+};
+
+// 저장한 캐릭터 대사 모음 (캐릭터 날짜 별)
+export const voiceListByCharDTO = (rows) => {
+  return rows.map(row => ({
+    voice_id : row.voice_id,
+    dialogueText: row.dialogue_text,
+    createdAt: row.created_at,
+    voice : row.voice
+  }));
+};
+
+
 // 프로필 수정용 DTO
 export const patchUserProfileDTO = (data) => {
     return {
