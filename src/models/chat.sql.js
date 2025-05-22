@@ -18,9 +18,9 @@ export const getNameByChatIdSQL = 'SELECT c.character FROM character_chat cc JOI
 
 // 채팅방 목록
 export const getChatListSQL =
-  'SELECT c.character, MAX(cc.updated_at) as last_chat_at ' +
+  'SELECT c.character, MAX(cc.updated_at) as updated_at ' +
   'FROM character_chat cc ' +
   'JOIN `character` c ON cc.character_id = c.character_id ' +
   'WHERE cc.user_id = ? ' +
   'GROUP BY cc.character_id ' +
-  'ORDER BY last_chat_at DESC';
+  'ORDER BY updated_at DESC';
