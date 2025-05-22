@@ -1,6 +1,6 @@
 import { BaseError } from "../../config/error.js";
 import { status } from "../../config/response.status.js";
-import { allUser, overlapId, selectUserPassword } from "../models/user.dao.js";
+import { allUser, overlapId, selectUserPassword, deleteUser } from "../models/user.dao.js";
 
 // 전체 유저 조회
 export const Users = async () => {
@@ -30,3 +30,13 @@ export const passwordCheck = async (data) => {
         throw error;
     }
 }
+
+// 회원 탈퇴
+export const withdrawUser = async (user_id) => {
+  try {
+    await deleteUser(user_id);
+    return;
+  } catch (error) {
+    throw error;
+  }
+};

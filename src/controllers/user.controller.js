@@ -3,7 +3,7 @@ import { status } from "../../config/response.status.js";
 import crypto from "crypto";
 
 import { joinUser, userLogin } from "../services/user.service.js";
-import { Users, repeatId, passwordCheck } from "../providers/user.provider.js";
+import { Users, repeatId, passwordCheck, withdrawUser } from "../providers/user.provider.js";
 
 // 전체 회원 조회
 export const allUser = async (req, res, next) => {
@@ -63,4 +63,16 @@ export const login = async (req, res, next) => {
   const token = await userLogin(passwordRows.user_id);
   console.log("token:", token);
   return res.send(response(status.SUCCESS, token));
+};
+
+// 회원 탈퇴
+export const withdraw = async (req, res, next) => {
+  try {
+    const user_id = req.verifiedToken.user_id;
+    await withdrawUser(user_id);
+    return res.send(response(status.SUCCESS, { message: "회원 탈퇴 완료" }));
+  } catch (err) {
+    console.error("회원 탈퇴 중 오류 발생:", err);
+    return res.send(response(status.INTERNAL_SERVER_ERROR, {}));
+  }
 };
