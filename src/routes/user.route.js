@@ -1,9 +1,14 @@
 // routes/user.route.js
 import express from "express";
 import asyncHandler from "express-async-handler";
-
-import { userSignin } from "../controllers/user.controller.js";
+import { imageUploader_profile } from "../../config/image.uploader.js"
+import { allUser, signUp, login } from "../controllers/user.controller.js";
 
 export const userRouter = express.Router();
 
-userRouter.post("/signin", asyncHandler(userSignin));
+// 전체 유저 조회
+userRouter.get("/users", asyncHandler(allUser));
+// 회원가입
+userRouter.post('/sign-up', imageUploader_profile.single("image"), asyncHandler(signUp))
+// 로그인
+userRouter.post('/login', asyncHandler(login))
