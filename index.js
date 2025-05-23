@@ -4,6 +4,8 @@ import { BaseError } from "./config/error.js";
 import { status } from "./config/response.status.js";
 import { userRouter } from "./src/routes/user.route.js";
 import { tempRouter } from "./src/routes/temp.route.js";
+import { mypageRouter } from "./src/routes/mypage.route.js";
+import { chatRouter } from "./src/routes/chat.route.js";
 
 const app = express();
 const port = 3000;
@@ -20,6 +22,11 @@ app.use("/user", userRouter);
 // temp
 app.use("/temp", tempRouter);
 
+// mypage
+app.use("/mypage", mypageRouter);
+
+// chatgpt
+app.use("/chat", chatRouter);
 
 // error handling
 app.use((req, res, next) => {

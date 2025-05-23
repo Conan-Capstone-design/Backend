@@ -9,7 +9,9 @@ import {
   checkUser,
   insertProfileImageSql,
   repId,
-  checkPw
+  checkPw,
+  deleteImageSql,
+  deleteUserSql
 } from "./user.sql.js";
 
 // 모든 유저 조회
@@ -85,8 +87,36 @@ export const selectUserPassword = async (data) => {
     );
     conn.release();
     console.log(result)
+
+// 아이디 중복 확인
+export const overlapId = async (data) => {
+  try {
+    const conn = await pool.getConnection();
+    const [result] = await conn.query(repId, [data.email]
+    );
+    conn.release();
     return result[0];
   } catch (err) {
+    throw new BaseError(status.PARAMETER_IS_WRONG);
+  }
+};
+
+// 회원 탈퇴
+// user.dao.js
+export const deleteUser = async (user_id) => {
+  try {
+    const conn = await pool.getConnection();
+    console.log("탈퇴 요청 user_id:", user_id);
+
+    // 데이터베이스 삭제
+    await conn.query(deleteImageSql, [user_id]);
+    await conn.query(deleteUserSql, [user_id]);
+
+    conn.release();
+    return;
+  } catch (err) {
+    console.error("쿼리 실행 중 에러:", err);
+
     throw new BaseError(status.PARAMETER_IS_WRONG);
   }
 };
