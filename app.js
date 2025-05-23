@@ -3,12 +3,15 @@ import { response } from "./config/response.js";
 import { BaseError } from "./config/error.js";
 import { status } from "./config/response.status.js";
 import { userRouter } from "./src/routes/user.route.js";
-import { tempRouter } from "./src/routes/temp.route.js";
 import { mypageRouter } from "./src/routes/mypage.route.js";
 import { chatRouter } from "./src/routes/chat.route.js";
 
 const app = express();
-const port = 3000;
+// local로 접속시
+// const port = 3000;
+
+// elastic beanstalk으로 접속시
+const port = 8080;
 
 // server setting - veiw, static, body-parser etc..
 app.set("port", process.env.PORT || 3000); // 서버 포트 지정
@@ -18,9 +21,6 @@ app.use(express.urlencoded({ extended: false }));
 
 // user
 app.use("/user", userRouter);
-
-// temp
-app.use("/temp", tempRouter);
 
 // mypage
 app.use("/mypage", mypageRouter);

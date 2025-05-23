@@ -87,14 +87,6 @@ export const selectUserPassword = async (data) => {
     );
     conn.release();
     console.log(result)
-
-// 아이디 중복 확인
-export const overlapId = async (data) => {
-  try {
-    const conn = await pool.getConnection();
-    const [result] = await conn.query(repId, [data.email]
-    );
-    conn.release();
     return result[0];
   } catch (err) {
     throw new BaseError(status.PARAMETER_IS_WRONG);

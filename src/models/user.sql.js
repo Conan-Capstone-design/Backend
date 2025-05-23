@@ -1,6 +1,6 @@
 // models/user.sql.js
 // 전체 회원 조회
-export const checkUser = "select * from USER"
+export const checkUser = "select * from user"
 
 export const insertUserSql =
   "INSERT INTO user (email, password, nickname, `option`, created_at) VALUES (?, ?, ?, ?, ?);";
