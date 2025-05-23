@@ -24,7 +24,8 @@ export const s3 = new S3Client({
     },
 });
 
-// 프로필 이미지 업로더
+
+// 프로필 이미지
 export const imageUploader_profile = multer({
     storage: multerS3({
         s3: s3,
@@ -37,8 +38,6 @@ export const imageUploader_profile = multer({
             }
             callback(null, `${uploadDirectory}/${req.body.email}${extension}`);
         },
-        // 🔥 이 부분 추가 (기본 ACL 강제 무력화)
-        acl: (req, file, cb) => cb(null, undefined),
     }),
 });
 
