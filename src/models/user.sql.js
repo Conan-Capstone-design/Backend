@@ -22,10 +22,10 @@ export const getPreferToUserID =
   "WHERE ufc.user_id = ? ORDER BY ufc.f_category_id ASC;";
 // 아이디 중복 확인
 export const repId = 
-  "select user_id, email from USER where email=?";
+  "select user_id, email from user where email=?";
 // 비밀번호 확인
 export const checkPw = 
-  "select user_id, email, password from USER where email=? and password=?";
+  "select user_id, email, password from user where email=? and password=?";
 
 // 회원 탈퇴
 export const deleteUserSql = "DELETE FROM user WHERE user_id = ?";

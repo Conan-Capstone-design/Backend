@@ -34,7 +34,7 @@ export const joinUser = async (body, image) => {
 
   // 이메일 중복시
   if (joinUserData == -1) {
-    throw new BaseError(status.EMAIL_ALREADY_EXIST);
+    return joinUserData;
   } else {
     return joinUserData
   }
