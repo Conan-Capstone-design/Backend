@@ -26,8 +26,12 @@ export const signUp = async (req, res, next) => {
     imageURL = null;
   }
   console.log("imageURL:", imageURL)
+  const result = await joinUser(req.body, imageURL)
 
-  res.send(response(status.SUCCESS, await joinUser(req.body, imageURL)));
+  if(result == -1) {
+    return res.send(response(status.EMAIL_ALREADY_EXIST, {}));
+  }
+  res.send(response(status.SUCCESS, result));
 };
 
 // 로그인

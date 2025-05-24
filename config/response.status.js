@@ -75,6 +75,12 @@ export const status = {
     code: "MEMBER4004",
     message: "비밀번호가 틀렸습니다.",
   },
+  EMAIL_ALREADY_EXIST: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "MEMBER4005",
+    message: "이미 존재하는 아이디입니다.",
+  },
 
   // db error
   PARAMETER_IS_WRONG: { 
