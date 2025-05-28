@@ -38,7 +38,7 @@ export const sendMessageService = async (userId, chatId, message) => {
   await saveMessageDAO(chatId, 'assistant', gptResponse);
 
   // 전체 메시지 반환
-  return await getChatByChatIdDAO(chatId);
+  return { role: 'assistant', message: gptResponse };
 };
 
 // 채팅방 목록

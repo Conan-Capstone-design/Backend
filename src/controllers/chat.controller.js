@@ -35,7 +35,7 @@ export const sendMessageCon = async (req, res) => {
 
     const messages = await sendMessageService(userId, chat_id, message);
 
-    res.send(response(status.SUCCESS, { messages }));
+    res.send(response(status.SUCCESS, messages));
   } catch (error) {
     console.error('메시지 전송 중 오류 발생:', error.message);
     res.send(response(status.INTERNAL_SERVER_ERROR, {}));

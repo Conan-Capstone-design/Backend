@@ -77,7 +77,6 @@ export const updateUserDao = async (user_id, updatedData) => {
     try {
         const conn = await pool.getConnection();
 
-        // USER 테이블 업데이트
         const userUpdates = [];
         const userParams = [];
 
@@ -98,7 +97,6 @@ export const updateUserDao = async (user_id, updatedData) => {
             await conn.query(userSql, userParams);
         }
 
-        // user_image 테이블 업데이트
         if (updatedData.photo) {
             await conn.query(updateUserImageSql, [user_id, updatedData.photo]);
         }

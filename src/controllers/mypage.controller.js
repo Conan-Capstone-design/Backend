@@ -66,66 +66,42 @@ export const deleteVoiceCon = async (req, res) => {
 export const updateUserCon = async (req, res) => {
     editImageProfile.single('profile_img')(req, res, async (err) => {
         if (err) {
-            console.error("profile_img를 업로드하는 중 오류 발생:", err);
+            console.error("profile_img 업로드 오류:", err);
             return res.send(response(status.INTERNAL_SERVER_ERROR, { message: err.message }));
         }
 
         try {
-            // 모든 값이 비어 있는지 확인
-            const isEmptyRequest = !req.body.nickname && !req.body.password && !req.file;
-            console.log(isEmptyRequest)
-            if (isEmptyRequest) {
-                // 기존 닉네임을 가져와서 설정
-                const originalData = await getNicknameDao(req.verifiedToken.user_id);
-                const originalNickname = originalData[0].nickname; // 실제 닉네임 추출
-                req.body.nickname = originalNickname;
-            }
-            // 프로필 데이터를 준비
-            const profileData = {
-                nickname: req.body.nickname,
-                password: req.body.password,
-                photo: req.file ? req.file.location : null // 파일이 있는 경우에만 설정
-            };
+            const userId = req.verifiedToken.user_id;
+            const { nickname, password } = req.body;
 
-            console.log(profileData)
+            const profileData = {};
 
-            // 사진이 없는 경우 또는 모든 값이 비어 있는 경우
-            if (profileData.photo == null || isEmptyRequest) {
-                const profileUrls = await getProfileImageDao(req.verifiedToken.user_id);
-                console.log("profileURLS : ", profileUrls)
-                if (profileUrls.length > 0 && profileUrls[0].profile_img !== null) {
-                    const profileUrl = profileUrls[0].profile_image;
-                    const key = profileUrl.split(".com/")[1].split("?")[0]; // S3 키 추출
-                    console.log(`삭제할 키: ${key}`);
+            if (nickname) profileData.nickname = nickname;
+            if (password) profileData.password = password;
 
-                    // S3에서 이미지 삭제
-                    await deleteS3Object(key);
-
-                    // 데이터베이스에서 프로필 이미지 URL 삭제
-                    await deleteImageDao(req.verifiedToken.user_id);
-                    profileData.photo = null; // 이미지 삭제 후 null로 설정
-                }
-            } else {
-                // 사진이 있는 경우 (새로 업로드하는 경우)
+            // 프로필 이미지가 업로드된 경우에만 처리
+            if (req.file) {
                 const oldUrl = req.file.location;
                 const oldKey = oldUrl.split('https://conan.s3.ap-northeast-2.amazonaws.com/')[1];
                 const fileExtension = path.extname(oldKey);
 
-                const emailResult = await getEmailDao(req.verifiedToken.user_id);
-                const email = emailResult[0][0].email;
-                const newKey = `profile/${email}${fileExtension}`;
+                const emailResult = await getEmailDao(userId);
+                const userEmail = emailResult[0][0].email;
+                const newKey = `profile/${userEmail}${fileExtension}`;
 
                 await renameS3Object(oldKey, newKey);
-
                 const timestamp = new Date().getTime();
                 profileData.photo = `https://conan.s3.ap-northeast-2.amazonaws.com/${newKey}?timestamp=${timestamp}`;
             }
 
-            // 프로필 정보 업데이트
-            const result = await updateUser(req.verifiedToken.user_id, profileData);
-            res.send(response(status.SUCCESS, result));
+            if (Object.keys(profileData).length === 0) {
+                return res.send(response(status.BAD_REQUEST, { message: "수정할 값이 없습니다." }));
+            }
+
+            const result = await updateUser(userId, profileData);
+            res.send(response(status.SUCCESS, profileData));
         } catch (error) {
-            console.error("프로필 정보를 업데이트하는 중 오류 발생:", error);
+            console.error("프로필 수정 중 오류:", error);
             res.send(response(status.INTERNAL_SERVER_ERROR, {}));
         }
     });

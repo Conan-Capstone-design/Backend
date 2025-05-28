@@ -39,11 +39,12 @@ export const deleteVoiceSql='DELETE rv FROM character_voice rv JOIN \`character\
 
 
 // 프로필 수정
-export const updateUserProfileSql = (updates) => `UPDATE USER SET ${updates.join(', ')}, updated_at = NOW() WHERE user_id = ?;`;
+export const updateUserProfileSql = (updates) =>
+    `UPDATE user SET ${updates.join(', ')}, updated_at = NOW() WHERE user_id = ?;`;
 export const updateUserImageSql = 'INSERT INTO user_image (user_id, profile_image) VALUES (?, ?) ON DUPLICATE KEY UPDATE profile_image = VALUES(profile_image);'
 export const getProfileUrlSql = 'SELECT profile_image FROM user_image WHERE user_id = ?;';
-export const getEmailSql = 'SELECT email FROM USER WHERE user_id = ?;';
-export const getNicknameSql = 'SELECT nickname FROM USER WHERE user_id = ?;'
+export const getEmailSql = 'SELECT email FROM user WHERE user_id = ?;';
+export const getNicknameSql = 'SELECT nickname FROM user WHERE user_id = ?;'
 
 // 사용자 프로필 사진 삭제
 export const deleteImageSql = 'UPDATE user_image SET profile_image = NULL WHERE user_id = ?;';
