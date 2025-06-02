@@ -82,12 +82,20 @@ export const status = {
     message: "이미 존재하는 아이디입니다.",
   },
 
-  // db error
-  PARAMETER_IS_WRONG: { 
+  // character err
+  CHARACTER_NOT_FOUND: {
     status: StatusCodes.BAD_REQUEST,
-    "isSuccess": false, 
-    "code": "DATABASE4001", 
-    "message": "쿼리 실행 시 전달되는 파라미터가 잘못되었습니다. 파라미터 개수 혹은 파라미터 형식을 확인해주세요." 
+    isSuccess: false,
+    code: "CHARACTER4001",
+    message: "존재하지 않는 캐릭터입니다.",
+  },
+
+  // db error
+  PARAMETER_IS_WRONG: {
+    status: StatusCodes.BAD_REQUEST,
+    "isSuccess": false,
+    "code": "DATABASE4001",
+    "message": "쿼리 실행 시 전달되는 파라미터가 잘못되었습니다. 파라미터 개수 혹은 파라미터 형식을 확인해주세요."
   },
 
 
