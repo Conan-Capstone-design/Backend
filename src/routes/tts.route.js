@@ -6,8 +6,8 @@ import { saveVoice } from "../controllers/tts.controller.js";
 import jwtMiddleware from "../../config/jwtMiddleware.js";
 
 
-export const tssRouter = express.Router();
+export const ttsRouter = express.Router();
 
 // 음성, 텍스트 저장
-tssRouter.post("/voice-save", jwtMiddleware, tts_voice.single('voice'), asyncHandler(saveVoice));
+ttsRouter.post("/voice-save", jwtMiddleware, tts_voice.single('voice'), asyncHandler(saveVoice));
 // 음성 삭제

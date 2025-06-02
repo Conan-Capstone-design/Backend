@@ -5,6 +5,7 @@ import { status } from "./config/response.status.js";
 import { userRouter } from "./src/routes/user.route.js";
 import { mypageRouter } from "./src/routes/mypage.route.js";
 import { chatRouter } from "./src/routes/chat.route.js";
+import { ttsRouter } from "./src/routes/tts.route.js";
 
 const app = express();
 // local로 접속시
@@ -27,6 +28,9 @@ app.use("/mypage", mypageRouter);
 
 // chatgpt
 app.use("/chat", chatRouter);
+
+// tts
+app.use("/tts", ttsRouter)
 
 // error handling
 app.use((req, res, next) => {
