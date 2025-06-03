@@ -81,6 +81,13 @@ export const status = {
     code: "MEMBER4005",
     message: "이미 존재하는 아이디입니다.",
   },
+  // login err
+  TOKEN_EMPTY: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "LOGIN4001",
+    message: "jwt 토큰 필요.",
+  },
 
   // character err
   CHARACTER_NOT_FOUND: {
