@@ -2,8 +2,8 @@ import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import crypto from "crypto";
 
-import { saveTts } from "../services/tts.service.js";
-import { getVoice } from "../providers/tts.provider.js";
+import { saveTts, deleteVoice } from "../services/tts.service.js";
+import { getVoice, viewVoice } from "../providers/tts.provider.js";
 
 
 // 음성, 텍스트 저장
@@ -29,6 +29,16 @@ export const saveVoice = async (req, res, next) => {
     res.send(response(status.SUCCESS, result));
 };
 
+// 저장 음성 전체 보기
+export const voiceAll = async (req, res, next) => {
+    console.log("저장 음성 전체 보기");
+    console.log("user_id:",req.verifiedToken.user_id)
+
+    const result = await viewVoice(req.verifiedToken.user_id)
+
+    res.send(response(status.SUCCESS, result));
+};
+
 // 음성 불러오기
 export const voicePlay = async (req, res, next) => {
     const id = req.params.voice_id;
@@ -38,6 +48,19 @@ export const voicePlay = async (req, res, next) => {
     console.log("user_id:",req.verifiedToken.user_id)
 
     const result = await getVoice(id, req.verifiedToken.user_id)
+
+    res.send(response(status.SUCCESS, result));
+};
+
+// 음성 삭제
+export const voiceDelete = async (req, res, next) => {
+    const id = req.params.voice_id;
+
+    console.log("음성 삭제");
+    console.log("params:", id)
+    console.log("user_id:",req.verifiedToken.user_id)
+
+    const result = await deleteVoice(id, req.verifiedToken.user_id)
 
     res.send(response(status.SUCCESS, result));
 };

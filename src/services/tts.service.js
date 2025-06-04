@@ -4,7 +4,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken"
 
 import {
-    ttsSave
+    ttsSave, voiceDelete
 } from "../models/tts.dao";
 
 // tts 음성 텍스트 저장
@@ -20,4 +20,9 @@ export const saveTts = async (body, user_id, voice) => {
         voice: voice,
         created_at: created_at
     });
+};
+
+// 음성 삭제
+export const deleteVoice = async (voice_id, user_id) => {
+    const result = await voiceDelete(voice_id, user_id);
 };
