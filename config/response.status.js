@@ -97,6 +97,13 @@ export const status = {
     message: "존재하지 않는 캐릭터입니다.",
   },
 
+  NO_PROCESS: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "PROCESS4001",
+    message: "실행 중인 프로세스 없음",
+  },
+
   // db error
   PARAMETER_IS_WRONG: {
     status: StatusCodes.BAD_REQUEST,
