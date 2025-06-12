@@ -33,8 +33,8 @@ export const deleteVoice = async (voice_id, user_id) => {
 
 //음성 생성
 const CHARACTER_DOMAINS = {
-  '코난': "http://conan-tts.store/synthesize",
-  '짱구': "http://conan-tts.store/synthesize",
+  '코난': "http://conan-tts-conan.store/synthesize",
+  '짱구': "http://conan-tts-jjanggu.store/synthesize",
   '케로로': "http://conan-tts.store/synthesize"
 };
 export const generateVoice = async (character, text) => {
