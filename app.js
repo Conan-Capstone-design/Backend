@@ -9,10 +9,10 @@ import { ttsRouter } from "./src/routes/tts.route.js";
 
 const app = express();
 // local로 접속시
-// const port = 3000;
+const port = 3000;
 
 // elastic beanstalk으로 접속시
-const port = 8080;
+// const port = 8080;
 
 // server setting - veiw, static, body-parser etc..
 app.set("port", process.env.PORT || 3000); // 서버 포트 지정

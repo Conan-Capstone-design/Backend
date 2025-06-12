@@ -16,6 +16,7 @@ export const saveTts = async (body, user_id, voice) => {
     const result = await ttsSave({
         user_id: user_id,
         character_id: body.character_id,
+        title: body.title,
         text: body.dialogue_text,
         voice: voice,
         created_at: created_at

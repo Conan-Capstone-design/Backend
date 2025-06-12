@@ -3,7 +3,7 @@ import { status } from "../../config/response.status.js";
 import crypto from "crypto";
 
 import { saveTts, deleteVoice } from "../services/tts.service.js";
-import { getVoice, viewVoice } from "../providers/tts.provider.js";
+import { viewVoice } from "../providers/tts.provider.js";
 
 
 // 음성, 텍스트 저장
@@ -35,19 +35,6 @@ export const voiceAll = async (req, res, next) => {
     console.log("user_id:",req.verifiedToken.user_id)
 
     const result = await viewVoice(req.verifiedToken.user_id)
-
-    res.send(response(status.SUCCESS, result));
-};
-
-// 음성 불러오기
-export const voicePlay = async (req, res, next) => {
-    const id = req.params.voice_id;
-
-    console.log("음성 재생");
-    console.log("params:", id)
-    console.log("user_id:",req.verifiedToken.user_id)
-
-    const result = await getVoice(id, req.verifiedToken.user_id)
 
     res.send(response(status.SUCCESS, result));
 };
