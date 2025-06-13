@@ -88,6 +88,13 @@ export const status = {
     code: "LOGIN4001",
     message: "jwt 토큰 필요.",
   },
+    TOKEN_VERIFICATION_FAILURE: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "LOGIN4002",
+    message: "jwt 토큰 인증 실패.",
+  },
+
 
   // character err
   CHARACTER_NOT_FOUND: {
