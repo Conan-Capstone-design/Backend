@@ -2,8 +2,8 @@ import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import crypto from "crypto";
 
-import { saveTts, deleteVoice } from "../services/tts.service.js";
-import { viewVoice } from "../providers/tts.provider.js";
+import { saveTts, deleteVoice, generateVoice  } from "../services/tts.service.js";
+import { getVoice, viewVoice } from "../providers/tts.provider.js";
 
 
 // 음성, 텍스트 저장
@@ -50,4 +50,26 @@ export const voiceDelete = async (req, res, next) => {
     const result = await deleteVoice(id, req.verifiedToken.user_id)
 
     res.send(response(status.SUCCESS, result));
+};
+
+// 음성 재생
+export const PlayVoiceTemp = async (req, res, next) => {
+  try {
+    const { character, text } = req.body;
+
+    if (!character || !text) {
+      return res.send(response(status.PARAMETER_IS_WRONG, {
+        message: "character/ text는 필수입니다."
+      }));
+    }
+
+    const result = await generateVoice(character, text);
+
+    return res.send(response(status.SUCCESS, result));
+  } catch (error) {
+    console.error("음성 재생 실패:", error);
+    return res.send(response(status.INTERNAL_SERVER_ERROR, {
+      error: error.message
+    }));
+  }
 };

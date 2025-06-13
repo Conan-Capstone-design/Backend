@@ -1,4 +1,4 @@
-import { S3Client, DeleteObjectCommand, CopyObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3"
+import { S3Client, DeleteObjectCommand, CopyObjectCommand, HeadObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3"
 import path from "path"
 import multer from "multer"
 import { slugify } from 'transliteration';
@@ -33,3 +33,21 @@ export const tts_voice = multer({
         },
     }),
 });
+
+// 직접 버퍼를 S3에 업로드하는 함수
+export const uploadAudioToS3 = async (buffer, key) => {
+  await s3.send(new PutObjectCommand({
+    Bucket: "conan",
+    Key: key,
+    Body: buffer,
+    ContentType: "audio/wav",
+  }));
+};
+
+// 지정된 key의 오디오를 삭제하는 함수
+export const deleteAudioFromS3 = async (key) => {
+  await s3.send(new DeleteObjectCommand({
+    Bucket: "conan",
+    Key: key,
+  }));
+};
