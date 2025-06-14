@@ -30,7 +30,7 @@ export const voiceListDTO = (rows) => {
 export const voiceListByCharDTO = (rows) => {
   return rows.map(row => ({
     voice_id : row.voice_id,
-    dialogueText: row.dialogue_text,
+    title: row.title,
     createdAt: row.created_at,
     voice : row.voice
   }));

@@ -27,7 +27,7 @@ WHERE rv.rn = 1;
 `;
 // 캐릭터별 저장한 캐릭터 대사 모음
 export const getVoiceListByCharSql= `
-    SELECT rv.dialogue_text, rv.created_at, rv.voice_id, rv.voice
+    SELECT rv.title, rv.created_at, rv.voice_id, rv.voice
     FROM character_voice rv
     JOIN \`character\` c ON rv.character_id = c.character_id
     WHERE rv.user_id = ? AND c.\`character\` = ?
