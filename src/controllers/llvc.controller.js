@@ -52,78 +52,51 @@ export const stopVoiceConversion = async (req, res) => {
     }
 };
 
-// 비디오 변환
-export const convertVideo = async (req, res, next) => {
+import axios from 'axios';
+import FormData from 'form-data';
+// import fs from 'fs';
+
+// EC2 IP와 포트
+const EC2_API_URL = 'http://13.125.234.145:8080/video-convert';
+
+export const convertVideo = async (req, res) => {
     try {
-        console.log("비디오 변환 시작");
+        const inputFile = req.file;
+        const targetIndex = req.body.targetIndex;
 
-        // Postman에서 파일 업로드 (req.file) 및 targetIndex 받기
-        const inputFile = req.file; // 업로드된 파일
-        const targetIndex = req.body.targetIndex; // 숫자로 받기 (기본값 1)
+        if (!inputFile) {
+            return res.status(400).json({ error: '비디오 파일이 필요합니다.' });
+        }
 
-        // 상대경로로 모델 디렉토리 지정
-        const modelDir = join(__dirname, '../../llvc_model_server');
+        // EC2에 보낼 form-data 구성
+        const formData = new FormData();
+        formData.append('video', fs.createReadStream(inputFile.path));
+        formData.append('targetIndex', targetIndex);
+        console.log("구성!")
 
-        // 업로드된 파일을 모델 디렉토리로 복사 (임시)
-        const inputPath = join(modelDir, inputFile.originalname);
-        console.log("inputPath:", inputPath)
-        fs.copyFileSync(inputFile.path, inputPath);
-
-        // 출력 파일 경로
-        const outputFileName = `${inputFile.originalname.replace('.mp4', '')}_output.mp4`;
-        const outputPath = join(modelDir, outputFileName);
-
-        // 체크포인트 및 설정 파일 경로
-        const checkpointPath = join(modelDir, 'G_765000.pth');
-        const configPath = join(modelDir, 'config.json');
-
-        // Python 스크립트 실행 (상대경로 사용)
-        pythonProcess = spawn('python3', [
-            join(modelDir, 'video_voice_transformer.py'),
-            '-i', inputPath,
-            '-o', outputPath,
-            '-c', checkpointPath,
-            '--config', configPath,
-            '-t', targetIndex.toString()
-        ], {
-            cwd: modelDir
+        // EC2에 요청
+        const ec2Response = await axios.post(EC2_API_URL, formData, {
+            headers: formData.getHeaders(),
+            maxBodyLength: Infinity,
+            maxContentLength: Infinity,
+            responseType: 'stream', // 🔥 파일 받을 때 중요!
         });
 
-        pythonProcess.stdout.on('data', (data) => {
-            console.log(`[PYTHON STDOUT] ${data}`);
-        });
+        // // 업로드 후 input 파일 정리
+        // fs.unlinkSync(inputFile.path);
 
-        pythonProcess.stderr.on('data', (data) => {
-            console.error(`[PYTHON STDERR] ${data}`);
-        });
-
-        pythonProcess.on('close', (code) => {
-            if (code === 0) {
-                // 변환된 영상 파일을 response로 전송
-                res.download(outputPath, outputFileName, (err) => {
-                    if (err) {
-                        console.error('파일 전송 실패:', err);
-                        res.status(500).json(response(status.INTERNAL_SERVER_ERROR, { error: "파일 전송 실패" }));
-                    }
-                    // 임시 파일 정리
-                    fs.unlinkSync(inputPath);
-                    fs.unlinkSync(outputPath);
-                    fs.unlinkSync(inputFile.path);
-                    // audio 파일(wav)도 삭제
-                    const baseName = inputPath.replace(/\.[^/.]+$/, "");
-                    const origWav = baseName + '.wav';
-                    const modWav = baseName + '_modulated.wav';
-                    if (fs.existsSync(origWav)) fs.unlinkSync(origWav);
-                    if (fs.existsSync(modWav)) fs.unlinkSync(modWav);
-
-                });
-            } else {
-                res.status(500).json(response(status.INTERNAL_SERVER_ERROR, { error: "비디오 변환 실패" }));
-            }
-        });
+        // const { outputFile, outputPath } = ec2Response.data;
+        // 🔥 파일 스트림 그대로 사용자에게 전달
+        res.setHeader('Content-Disposition', 'attachment; filename=converted.mp4');
+        ec2Response.data.pipe(res);
+        // return res.status(200).json({
+        //   message: '변환 완료',
+        //   outputFile,
+        //   outputPath, // 필요에 따라 S3로 올리거나 EC2에서 직접 다운로드 처리
+        // });
 
     } catch (error) {
-        console.error('[NODE ERROR]', error);
-        res.status(500).json(response(status.INTERNAL_SERVER_ERROR, { error: error.message }));
+        console.error('[EB → EC2 ERROR]', error.message);
+        return res.status(500).json({ error: 'EC2 변환 요청 실패' });
     }
 };
