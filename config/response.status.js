@@ -88,13 +88,12 @@ export const status = {
     code: "LOGIN4001",
     message: "jwt 토큰 필요.",
   },
-    TOKEN_VERIFICATION_FAILURE: {
+  TOKEN_VERIFICATION_FAILURE: {
     status: StatusCodes.BAD_REQUEST,
     isSuccess: false,
     code: "LOGIN4002",
     message: "jwt 토큰 인증 실패.",
   },
-
 
   // character err
   CHARACTER_NOT_FOUND: {
@@ -102,6 +101,13 @@ export const status = {
     isSuccess: false,
     code: "CHARACTER4001",
     message: "존재하지 않는 캐릭터입니다.",
+  },
+
+  NO_PROCESS: {
+    status: StatusCodes.BAD_REQUEST,
+    isSuccess: false,
+    code: "PROCESS4001",
+    message: "실행 중인 프로세스 없음",
   },
 
   // db error
