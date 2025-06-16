@@ -33,17 +33,27 @@ export const deleteVoice = async (voice_id, user_id) => {
 };
 
 //음성 생성
-const CHARACTER_DOMAINS = {
-  '코난': "http://conan-tts-conan.store/synthesize",
-  '짱구': "http://conan-tts-jjanggu.store/synthesize",
-  '케로로': "http://conan-tts.store/synthesize"
-};
 export const generateVoice = async (character, text) => {
-  const ttsUrl = CHARACTER_DOMAINS[character];
-  const synthRes = await axios.post(ttsUrl, { text }, {
-    responseType: "arraybuffer",
-    timeout: 500000,
-  });
+  const ttsUrl = "http://conan-tts-conan.store/synthesize";
+  const characterMap = {
+    "코난": "conan",
+    "케로로": "keroro",
+    "짱구": "jjanggu"
+  };
+
+  const mappedCharacter = characterMap[character] || character; // 매핑 없으면 원래값
+
+  const synthRes = await axios.post(
+    ttsUrl,
+    {
+      character: mappedCharacter, // <-- character도 함께 전송
+      text
+    },
+    {
+      responseType: "arraybuffer",
+      timeout: 500000,
+    }
+  );
 
   const buffer = Buffer.from(synthRes.data);
   const filename = `temp-tts/${uuidv4()}.wav`;
