@@ -29,7 +29,8 @@ export const tts_voice = multer({
             if (!allowedExtensions.includes(extension)) {
                 return callback(new Error("wrong extension"));
             }
-            callback(null, `${uploadDirectory}/${req.verifiedToken.user_id}${extension}`);
+
+            callback(null, `${uploadDirectory}/${req.verifiedToken.user_id}_${Date.now()}${extension}`);
         },
     }),
 });
